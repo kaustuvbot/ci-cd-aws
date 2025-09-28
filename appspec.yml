@@ -1,0 +1,31 @@
+version: 0.0
+os: linux
+files:
+  - source: /
+    destination: /var/www/nodejs-app
+    overwrite: yes
+permissions:
+  - object: /var/www/nodejs-app
+    owner: ec2-user
+    group: ec2-user
+    mode: 755
+    type:
+      - directory
+      - file
+hooks:
+  BeforeInstall:
+    - location: scripts/install_dependencies.sh
+      timeout: 300
+      runas: root
+  ApplicationStart:
+    - location: scripts/start_server.sh
+      timeout: 300
+      runas: ec2-user
+  ApplicationStop:
+    - location: scripts/stop_server.sh
+      timeout: 300
+      runas: ec2-user
+  ValidateService:
+    - location: scripts/validate_service.sh
+      timeout: 300
+      runas: ec2-user

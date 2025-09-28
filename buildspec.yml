@@ -1,0 +1,21 @@
+version: 0.2
+
+phases:
+  pre_build:
+    commands:
+      - echo Build started on `date`
+      - echo Connecting to GitHub...
+  build:
+    commands:
+      - echo Build started on `date`
+      - npm ci
+      - npm run lint
+      # - npm test
+  post_build:
+    commands:
+      - echo Build completed on `date`
+
+artifacts:
+  files:
+    - "**/*"
+  name: nodejs-app-$(date +%Y-%m-%d)
