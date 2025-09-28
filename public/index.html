@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CI/CD Lab - Simple Web App Using GitHub Actions as A CI CD Pipeline</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            min-height: 100vh;
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .info-card {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 20px;
+            border-radius: 10px;
+            margin: 15px 0;
+        }
+
+        .status {
+            display: inline-block;
+            padding: 5px 10px;
+            background: #4CAF50;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .version {
+            font-family: monospace;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 5px 10px;
+            border-radius: 5px;
+            display: inline-block;
+        }
+
+        button {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 10px 5px;
+        }
+
+        button:hover {
+            background: #45a049;
+        }
+
+        #output {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 15px;
+            border-radius: 5px;
+            font-family: monospace;
+            margin-top: 15px;
+            min-height: 100px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>🚀 CI/CD Lab - Simple Web App Using GitHub Actions as A CI CD Pipeline</h1>
+
+        <div class="info-card">
+            <h3>Application Status</h3>
+            <span class="status">RUNNING</span>
+            <p>Version: <span class="version" id="version">Loading...</span></p>
+            <p>Environment: <span id="environment">Loading...</span></p>
+            <p>Last Updated: <span id="timestamp">Loading...</span></p>
+        </div>
+
+        <div class="info-card">
+            <h3>Test API Endpoints</h3>
+            <button onclick="testHealth()">Health Check</button>
+            <button onclick="testInfo()">App Info</button>
+            <button onclick="clearOutput()">Clear Output</button>
+
+            <pre id="output">Click buttons above to test API endpoints...</pre>
+        </div>
+
+        <div class="info-card">
+            <h3>Lab Instructions</h3>
+            <p>This is a simple Node.js web application for practicing CI/CD with:</p>
+            <ul>
+                <li>GitHub Actions for automated testing and deployment</li>
+                <li>AWS CodePipeline and CodeDeploy for AWS-native CI/CD</li>
+                <li>EC2 deployment with automated health checks</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        async function testHealth() {
+            try {
+                const response = await fetch('/health');
+                const data = await response.json();
+                document.getElementById('output').textContent = 'Health Check Result:\n' + JSON.stringify(data, null, 2);
+                updateStatus(data);
+            } catch (error) {
+                document.getElementById('output').textContent = 'Error: ' + error.message;
+            }
+        }
+
+        async function testInfo() {
+            try {
+                const response = await fetch('/api/info');
+                const data = await response.json();
+                document.getElementById('output').textContent = 'App Info Result:\n' + JSON.stringify(data, null, 2);
+                updateAppInfo(data);
+            } catch (error) {
+                document.getElementById('output').textContent = 'Error: ' + error.message;
+            }
+        }
+
+        function clearOutput() {
+            document.getElementById('output').textContent = 'Output cleared. Click buttons above to test API endpoints...';
+        }
+
+        function updateStatus(data) {
+            if (data.version) document.getElementById('version').textContent = data.version;
+            if (data.timestamp) document.getElementById('timestamp').textContent = new Date(data.timestamp).toLocaleString();
+        }
+
+        function updateAppInfo(data) {
+            if (data.version) document.getElementById('version').textContent = data.version;
+            if (data.environment) document.getElementById('environment').textContent = data.environment;
+        }
+
+        // Load initial data
+        window.onload = function () {
+            testHealth();
+            testInfo();
+        };
+    </script>
+</body>
+
+</html>
